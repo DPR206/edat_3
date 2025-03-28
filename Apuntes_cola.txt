@@ -1,0 +1,94 @@
+Funciones
+    1. new_queue
+    2. push 
+    3. pop
+    4. front
+    5. rear
+    6. full
+    7. empty
+    8. free
+structura
+    struct _queue {
+        char *data
+        int capacity
+        int front, rear
+    }
+
+structura generalizada
+    struct _queue {
+        int front, rear;
+        int capacity;
+        void **data;  -----> primer puntero array, segundo puntero tipo genérico
+    }
+
+Distinguir entre llena/vacía
+    - Dejar un hueco libre en data  
+    - Poner NULL en data en new y pop 
+    - Contador "len"
+
+Para saber la longitud de la cola: (rear-front + capacity)%capacity
+Habría que cambiar los argumentos de push y pop, y en pop hay que cambiar la definición de 
+la variable a devoler.
+También hay que cambiar otrs elementos como: char next = pop(s) ----> char next= *((char *) pop(s)), 
+ahora tendríamos push(s, &next);
+
+Si cambiasemos a punteros
+    struct _queue {
+        void **front=NULL, **rear=NULL;
+        int capacity;
+        void **data; /* Otra opción void *data[MAX]; con esta no habría que mandar a create_queue() la
+        capacidad */
+    }
+
+int len(Queue *q)
+{
+    return (q->rear - q->front + q->capacity)%q->capacity; /* Sin punteros */
+    Con punteros sería igual porque al restar punteros pasamos a enteros.
+
+}
+
+Bool empty (Queue *q) ----> igual que sin punteros
+{
+    return q -> rear == q -> front;
+}
+
+Bool full (Queue *q)
+{
+    return q->front == (q-<rear+1)%q->capacity; /*Sin punteros*/
+    Para punteros había que restarla q->data a front y rear para pasar de tratar con punteros a enteros y luego
+    se lo vuelve a sumar al final.
+}
+
+void *pop(Queue *q)
+{
+    q->front = (q->front - q->data + 1)% q->capacity + q->data; -----> Misma idea que en full
+}
+
+void *peek_front (Queue *q)
+{
+    return q->data[q->front]; /*Sin punteros*/
+    return *q->front; ----> preferible
+    ó 
+    return q->data[q->front - q->data];
+}
+
+Para la función de rear sería similar a la de peak
+
+void push(Queue *, void *x)
+{
+    q->rear = q->data + (q->rear - q->data + 1)%q->capacity; /* Es indiferente sumar q->data al principio
+    o al final*/
+}
+
+Queue *create_queue(int capacity)
+{
+    Queue *q = ... (Idem que sin punteros)
+    q->data = ... (IDEM que sin punteros)
+    q->front = q->rear = 0 /* Sin punteros */
+    q->front = q->rear = q->data /* Con punteros */
+}
+
+void *peek_rear(Queue *q)
+{
+    return *(p->data + (p->rear - p->data - 1 + q->capacity)%p->capacity);
+}
