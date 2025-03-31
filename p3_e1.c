@@ -6,6 +6,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define MAX_STRING 100
+
 Delivery *build_delivery(FILE *pf);
 
 int main(int argc, char *argv[])
@@ -20,8 +22,8 @@ int main(int argc, char *argv[])
     fprintf(stderr, "Format should be: %s <File1>\n", argv[0]);
     return -1;
   }
-  
-  filename =argv[1];
+
+  filename = argv[1];
 
   file = fopen(filename, "r");
 
@@ -29,7 +31,7 @@ int main(int argc, char *argv[])
   {
     return -1;
   }
-  
+
   d = build_delivery(file);
 
   if (!d)
@@ -57,7 +59,7 @@ Delivery *build_delivery(FILE *pf)
   Delivery *d = NULL;
   Vertex *v = NULL;
   Status st = OK;
-  char *name, *product, *aux;
+  char name[MAX_STRING], product[MAX_STRING], *aux = NULL, aux1[MAX_STRING], aux2[MAX_STRING];
   int num = 0, i;
 
   if (!pf)
@@ -73,29 +75,31 @@ Delivery *build_delivery(FILE *pf)
   {
     return NULL;
   }
-  
+
   fscanf(pf, "%d", &num);
 
-  for ( i = 0; i < num; i++)
+  for (i = 0; i < num; i++)
   {
-    fscanf(pf, "%s", aux);
+    fscanf(pf, "%s %s", aux1, aux2);
+    aux = strcat(aux1, " ");
+    aux = strcat(aux1, aux2);
     v = vertex_initFromString(aux);
 
     if (!v)
     {
       return NULL;
     }
-    
+
     st = delivery_add(stdout, d, v, vertex_print);
 
     if (st == ERROR)
     {
+      vertex_free(v);
       return NULL;
     }
-    
-    vertex_free(v);
+
   }
-  
-  vertex_free(v);
+
+  /*vertex_free(v);*/
   return d;
 }

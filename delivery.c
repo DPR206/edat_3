@@ -152,9 +152,7 @@ Status delivery_add(FILE *pf, Delivery *d, void *p, p_element_print f)
 
 Status delivery_run_plan(FILE *pf, Delivery *d, p_element_print fprint, p_element_free ffree)
 {
-  Status st = OK;
-  void *e;
-  int n = 0;
+  void *e = NULL;
 
   if (!pf || !d)
   {
@@ -166,7 +164,7 @@ Status delivery_run_plan(FILE *pf, Delivery *d, p_element_print fprint, p_elemen
     return ERROR;
   }
 
-  while (queue_isEmpty(d->plan) == FALSE)
+  while (queue_isEmpty(delivery_getPlan(d)) == FALSE)
   {
     e = queue_pop(delivery_getPlan(d));
 
@@ -175,13 +173,13 @@ Status delivery_run_plan(FILE *pf, Delivery *d, p_element_print fprint, p_elemen
       return ERROR;
     }
 
-    fprintf(pf, "Delivering %s requsted by %s to ", delivery_getProductName(d), delivery_getName(d));
+    fprintf(pf, "Delivering %s requested by %s to ", delivery_getProductName(d), delivery_getName(d));
     fprint(pf, e);
     fprintf(pf, "\n");
 
-    ffree(e);
   }
 
+  ffree(e);
   return OK;
 }
 
