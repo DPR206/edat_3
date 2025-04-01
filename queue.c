@@ -140,12 +140,12 @@ int queue_print(FILE *fp, const Queue *q, p_queue_ele_print f)
 
     for (i = 0; i < size; i++)
     {
-        e = queue_pop(q);
+        e = queue_pop((Queue*)q);
         if (!e||queue_push(aux, e) == ERROR)
         {
             while(queue_isEmpty(aux)==FALSE){
                 e = queue_pop(aux);
-                queue_push(q, e);
+                queue_push((Queue*)q, e);
             }
             queue_free(aux);
             return -1;
@@ -158,7 +158,7 @@ int queue_print(FILE *fp, const Queue *q, p_queue_ele_print f)
     /*Se restaura la cola original*/
     while(queue_isEmpty(aux)==FALSE){
         e = queue_pop(aux);
-        queue_push(q, e);
+        queue_push((Queue*)q, e);
     }
     queue_free(aux);
 
