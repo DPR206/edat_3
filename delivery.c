@@ -176,10 +176,9 @@ Status delivery_run_plan(FILE *pf, Delivery *d, p_element_print fprint, p_elemen
     fprintf(pf, "Delivering %s requested by %s to ", delivery_getProductName(d), delivery_getName(d));
     fprint(pf, e);
     fprintf(pf, "\n");
-
+    ffree(e);
   }
 
-  ffree(e);
   return OK;
 }
 
