@@ -117,7 +117,7 @@ size_t queue_size(const Queue *q)
         return 0;
     }
 
-    return ((q->rear - q->front - sizeof(void *) + MAX_QUEUE) % MAX_QUEUE);
+    return ((q->rear - q->front + MAX_QUEUE) % MAX_QUEUE);
 }
 
 int queue_print(FILE *fp, const Queue *q, p_queue_ele_print f)
@@ -141,7 +141,8 @@ int queue_print(FILE *fp, const Queue *q, p_queue_ele_print f)
     for (i = 0; i < size; i++)
     {
         e = queue_pop((Queue*)q);
-        if (!e||queue_push(aux, e) == ERROR)
+        queue_push(aux, e);
+        if (!e)
         {
             while(queue_isEmpty(aux)==FALSE){
                 e = queue_pop(aux);
@@ -150,10 +151,9 @@ int queue_print(FILE *fp, const Queue *q, p_queue_ele_print f)
             queue_free(aux);
             return -1;
         }
-
         count += f(fp, e);
-        count += fprintf(fp, "\n");
     }
+    count+=fprintf(fp, "\n");
 
     /*Se restaura la cola original*/
     while(queue_isEmpty(aux)==FALSE){

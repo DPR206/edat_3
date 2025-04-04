@@ -59,14 +59,15 @@ Delivery *build_delivery(FILE *pf)
   Delivery *d = NULL;
   Vertex *v = NULL;
   Status st = OK;
-  char name[MAX_STRING], product[MAX_STRING], *aux = NULL, aux1[MAX_STRING], aux2[MAX_STRING];
+  char name[MAX_STRING], product[MAX_STRING];
+  /*char *aux = NULL, aux1[MAX_STRING], aux2[MAX_STRING];*/
+  char line[MAX_STRING];
   int num = 0, i;
 
   if (!pf)
   {
     return NULL;
   }
-
   fscanf(pf, "%s %s", name, product);
 
   d = delivery_init(name, product);
@@ -77,14 +78,21 @@ Delivery *build_delivery(FILE *pf)
   }
 
   fscanf(pf, "%d", &num);
-
+  fgets(line, MAX_STRING, pf);
   for (i = 0; i < num; i++)
   {
+    /*
     fscanf(pf, "%s %s", aux1, aux2);
     aux = strcat(aux1, " ");
     aux = strcat(aux1, aux2);
     v = vertex_initFromString(aux);
+  */
 
+    if(!fgets(line, MAX_STRING, pf)){
+      return NULL;
+    }
+    v = vertex_initFromString(line);
+    
     if (!v)
     {
       return NULL;
