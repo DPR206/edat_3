@@ -31,7 +31,7 @@ p3_e1.o: p3_e1.c vertex.h delivery.h queue.h file_utils.h
 p3_e2a.o: p3_e2a.c vertex.h delivery.h queue.h file_utils.h
 	$(CC) $(CFLAGS) -c p3_e2a.c
 	
-p3_e2b.o: p3_e2b.c
+p3_e2b.o: p3_e2b.c vertex.h graph.h queue.h stack.h file_utils.h
 	$(CC) $(CFLAGS) -c p3_e2b.c
 	
 p3_e3.o: p3_e3.c list.h file_utils.h

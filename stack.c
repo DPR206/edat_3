@@ -90,7 +90,7 @@ int stack_print(FILE* fp, const Stack *s,  P_stack_ele_print f){
 
     if(!fp||!s||!f) return -1;
 
-    for (i=0; i<s->top; i++){
+    for (i=s->top - 1; i>=0; i--){
         count+=f(fp, s->item[i]);
         fprintf(stdout, "\n");
     }
