@@ -7,7 +7,7 @@ LDLIBS = -lqueue
 ##############################################################
 OBJECTSP3E1 = p3_e1.o vertex.o delivery.o
 OBJECTSP3E2A = p3_e2a.o vertex.o queue.o delivery.o file_utils.o
-OBJECTSP3E2B = p3_e2b.o vertex.o queue.o stack.o file_utils.o
+OBJECTSP3E2B = p3_e2b.o vertex.o graph.o queue.o stack.o file_utils.o
 OBJECTSP3E3 = p3_e3.o
 ##############################################################
 
@@ -37,14 +37,17 @@ p3_e2b.o: p3_e2b.c
 p3_e3.o: p3_e3.c
 	$(CC) $(CFLAGS) -c p3_e3.c
 
-vertex.o: vertex.c vertex.h
-	$(CC) $(CFLAGS) -c vertex.c
-
 queue.o: queue.c
 	$(CC) $(CFLAGS) -c queue.c
 
 stack.o: stack.c
 	$(CC) $(CFLAGS) -c stack.c
+
+vertex.o: vertex.c vertex.h
+	$(CC) $(CFLAGS) -c vertex.c
+
+graph.o: graph.c graph.h stack.h vertex.h
+	$(CC) $(CFLAGS) -c graph.c
 
 delivery.o: delivery.c delivery.h queue.h
 	$(CC) $(CFLAGS) -c delivery.c
@@ -64,7 +67,7 @@ run:
 	@echo ">>>>>>>>>>Running p3_e2a"
 	./p3_e2a requests.txt
 	@echo ">>>>>>>>>>Running p3_e2b"
-	./p3_e2b
+	./p3_e2b city_graph.txt 100 700
 	@echo ">>>>>>>>>>Running p3_e3"
 	./p3_e3
 runv:
@@ -73,6 +76,6 @@ runv:
 	@echo "Running p3_e2a with valgrind"
 	valgrind --leak-check=full --track-origins=yes ./p3_e2a requests.txt
 	@echo "Running p3_e2b with valgrind"
-	valgrind --leak-check=full --track-origins=yes ./p3_e2b
+	valgrind --leak-check=full --track-origins=yes ./p3_e2b city_graph.txt 100 700
 	@echo "Running p3_e3 with valgrind"
 	valgrind --leak-check=full --track-origins=yes ./p3_e3

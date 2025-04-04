@@ -488,3 +488,124 @@ Status graph_depthSearch(Graph *g, long vf, long vt)
     stack_free(s);
     return st;
 }
+
+Status graph_breadthSearch(Graph *g, long vf, long vt)
+{
+    Queue *q = NULL;
+    Status st = OK;
+    Vertex *vo = NULL, *Vf = NULL, *Vt = NULL, *v_aux = NULL;
+    long *vertex_connect = NULL;
+    int i, num_connections;
+
+    if (!g || vf < 0 || vt < 0)
+    {
+        return ERROR;
+    }
+
+    Vf = graph_get_vertex_from_id(g, vf);
+
+    if (!Vf)
+    {
+        return ERROR;
+    }
+
+    Vt = graph_get_vertex_from_id(g, vt);
+
+    if (!Vt)
+    {
+        return ERROR;
+    }
+
+    if (graph_contains(g, vf) == FALSE)
+    {
+        return ERROR;
+    }
+
+    if (graph_contains(g, vt) == FALSE)
+    {
+        return ERROR;
+    }
+
+    for (i = 0; i < graph_getNumberOfVertices(g); i++)
+    {
+        if (vertex_setState(g->vertices[i], WHITE) == ERROR)
+        {
+            return ERROR;
+        }
+    }
+
+    st = OK;
+
+    q = queue_new();
+
+    if (!queue_isEmpty(q))
+    {
+        return ERROR;
+    }
+
+    if (vertex_setState(Vf, BLACK) == ERROR)
+    {
+        queue_free(q);
+        return ERROR;
+    }
+
+    if (queue_push(q, Vf) == ERROR)
+    {
+        queue_free(q);
+        return ERROR;
+    }
+
+    while (queue_isEmpty(q) == FALSE && st == OK)
+    {
+        vo = queue_pop(q);
+        if (!vo)
+        {
+            st = ERROR;
+            break;
+        }
+        
+
+        vertex_print(stdout, vo);
+        fprintf(stdout, "\n");
+
+        if (vertex_cmp(vo, Vt) == 0)
+        {
+            st = OK;
+            break;
+        }
+
+        vertex_connect = graph_getConnectionsFromId(g, vertex_getId(vo));
+        num_connections = graph_getNumberOfConnectionsFromId(g, vertex_getId(vo));
+
+        if (!vertex_connect)
+        {
+            st = ERROR;
+            break;
+        }
+
+        for (i = 0; i < num_connections; i++)
+        {
+            v_aux = graph_get_vertex_from_id(g, vertex_connect[i]);
+
+            if (!v_aux)
+            {
+                st = ERROR;
+                break;
+            }
+
+            if (vertex_getState(v_aux) == WHITE)
+            {
+                if (vertex_setState(v_aux, BLACK) == ERROR || queue_push(q, v_aux) == ERROR)
+                {
+                    st = ERROR;
+                    break;
+                }
+            }
+        }
+        
+        free(vertex_connect);
+    }
+
+    queue_free(q);
+    return st;
+}

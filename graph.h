@@ -14,6 +14,7 @@
 #include "vertex.h"
 #include "types.h"
 #include "stack.h"
+#include "queue.h"
 
 typedef struct _Graph Graph;
 
@@ -221,5 +222,7 @@ Status graph_readFromFile (FILE *fin, Graph *g);
  * @return The function returns OK or ERROR
  */
 Status graph_depthSearch(Graph *g, long vf, long vt);
+
+Status graph_breadthSearch(Graph *g, long vf, long vt);
 
 #endif /* GRAPH_H */
