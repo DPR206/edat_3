@@ -71,9 +71,9 @@ run:
 	./p3_e2a requests.txt
 	@echo ">>>>>>>>>>Running p3_e2b"
 	./p3_e2b city_graph.txt 100 700
-	@echo ">>>>>>>>>>Running p3_e3"
+	@echo ">>>>>>>>>>Running p3_e3 for ascending order"
 	./p3_e3 grades.txt 1
-	@echo ">>>>>>>>>>Running p3_e3"
+	@echo ">>>>>>>>>>Running p3_e3 for descending order"
 	./p3_e3 grades.txt -1
 runv:
 	@echo "Running p3_e1 with valgrind"
@@ -82,7 +82,7 @@ runv:
 	valgrind --leak-check=full --track-origins=yes ./p3_e2a requests.txt
 	@echo "Running p3_e2b with valgrind"
 	valgrind --leak-check=full --track-origins=yes ./p3_e2b city_graph.txt 100 700
-	@echo "Running p3_e3 with valgrind"
+	@echo "Running p3_e3 with valgrind for ascending order"
 	valgrind --leak-check=full --track-origins=yes ./p3_e3 grades.txt 1
-	@echo "Running p3_e3 with valgrind"
+	@echo "Running p3_e3 with valgrind for descending order"
 	valgrind --leak-check=full --track-origins=yes ./p3_e3 grades.txt -1
