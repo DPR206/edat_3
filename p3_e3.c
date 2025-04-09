@@ -11,8 +11,8 @@ int main(int argc, char *argv[])
   Status st = OK;
   char *filename = NULL;
   int total = 0, i, order = 0;
-  float number;
-  void *e;
+  float n;
+  void *e, *number = NULL;
 
   if (argc < 3 || argc > 3)
   {
@@ -41,20 +41,31 @@ int main(int argc, char *argv[])
 
   for (i = 1; i <= total; i++)
   {
-    fscanf(file, "%f", &number);
+    fscanf(file, "%f", &n);
+
+    number = float_init(n);
+
+    if (!number)
+    {
+      list_free(l1);
+      fclose(file);
+      return -1;
+    }
+
     if (!(i % 2))
     {
-      st = list_pushFront(l1, &number);
+      st = list_pushFront(l1, number);
       if (st == ERROR)
       {
         list_free(l1);
         fclose(file);
         return -1;
       }
+  
     }
     else
     {
-      st = list_pushBack(l1, &number);
+      st = list_pushBack(l1, number);
       if (st == ERROR)
       {
         list_free(l1);
@@ -62,11 +73,12 @@ int main(int argc, char *argv[])
         return -1;
       }
     }
+
+    float_free(number);
   }
 
   list_print(stdout, l1, float_print);
   fclose(file);
-
 
   fprintf(stdout, "Finished inserting. Now we extract from the beginning and insert in order:\n");
 
@@ -100,7 +112,6 @@ int main(int argc, char *argv[])
     }
   }
 
-
   list_print(stdout, l2, float_print);
 
   fprintf(stdout, "Now we extract from the end and insert in order:\n");
@@ -124,7 +135,6 @@ int main(int argc, char *argv[])
       return -1;
     }
   }
-
 
   list_print(stdout, l2, float_print);
 
