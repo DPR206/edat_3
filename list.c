@@ -22,6 +22,11 @@ NodeList *new_node(void *e)
 {
   NodeList *n = NULL;
 
+  if (!e)
+  {
+    return NULL;
+  }
+
   n = (NodeList *)calloc(1, sizeof(NodeList));
 
   if (!n)
@@ -70,7 +75,7 @@ Bool list_isEmpty(const List *pl)
 
 Status list_pushFront(List *pl, void *e)
 {
-  NodeList *new_nd = NULL /*, *aux = NULL*/;
+  NodeList *new_nd = NULL;
 
   if (!pl || !e)
   {
@@ -86,9 +91,8 @@ Status list_pushFront(List *pl, void *e)
 
   if (list_isEmpty(pl) == TRUE)
   {
-    /*pl->last = new_nd;
-    pl->last->next = pl->last;*/
-    pl->last = new_nd->next = new_nd;
+    pl->last = new_nd;
+    pl->last->next = pl->last;
   }
   else
   {
@@ -96,16 +100,12 @@ Status list_pushFront(List *pl, void *e)
     pl->last->next = new_nd;
   }
 
-  /*aux = pl->last->next;
-  pl->last->next = new_nd;
-  new_nd->next = aux;*/
-
   return OK;
 }
 
 Status list_pushBack(List *pl, void *e)
 {
-  NodeList *new_nd = NULL /*, *aux = NULL, *aux2 = NULL*/;
+  NodeList *new_nd = NULL;
 
   if (!pl || !e)
   {
@@ -121,9 +121,9 @@ Status list_pushBack(List *pl, void *e)
 
   if (list_isEmpty(pl) == TRUE)
   {
-    /*pl->last = new_nd;
-    pl->last->next = pl->last;*/
-    pl->last = new_nd->next = new_nd;
+    new_nd->next = new_nd;
+    pl->last = new_nd;
+    /*pl->last = new_nd->next = new_nd;*/
   }
   else
   {
@@ -131,12 +131,6 @@ Status list_pushBack(List *pl, void *e)
     pl->last->next = new_nd;
     pl->last = new_nd;
   }
-
-  /*aux = pl->last;
-  aux2 = pl->last->next;
-  pl->last = new_nd;
-  aux->next = new_nd;
-  new_nd->next = aux2;*/
 
   return OK;
 }
@@ -280,16 +274,24 @@ void *list_popBack(List *pl)
 
 void list_free(List *pl)
 {
-  NodeList *aux1 = pl->last->next, *aux2 = NULL;
+  /*NodeList *aux1 = pl->last->next, *aux2 = NULL;*/
 
-  while (aux1)
+  /*while (aux1)
   {
     aux2 = aux1;
     aux1 = aux1->next;
     free(aux2);
-  }
+  }*/
 
-  free(pl);
+  if (pl)
+  {
+    if (pl->last)
+    {
+      free(pl->last);
+    }
+
+    free(pl);
+  }
 }
 
 size_t list_size(const List *pl)
@@ -323,9 +325,10 @@ size_t list_size(const List *pl)
 int list_print(FILE *fp, const List *pl, P_ele_print f)
 {
   NodeList *aux = NULL;
-  int num_characters = 0, count = list_size(pl), i;
+  int num_characters = 0, i;
+  size_t count = list_size(pl);
 
-  if (!pl || !fp)
+  if (!pl || !fp || list_isEmpty(pl)==TRUE)
   {
     return -1;
   }
@@ -336,6 +339,7 @@ int list_print(FILE *fp, const List *pl, P_ele_print f)
   for (i = 0; i < count; i++)
   {
     num_characters += f(fp, aux->data);
+    fprintf(stdout, " ");
     aux = aux->next;
   }
 
