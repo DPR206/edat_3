@@ -6,6 +6,8 @@
 
 float *read_from_file(FILE *file, int num);
 
+Status list_float_free (List *l);
+
 int main(int argc, char *argv[])
 {
   List *l1 = NULL, *l2 = NULL, *l3 = NULL, *l4=NULL;
@@ -48,6 +50,7 @@ int main(int argc, char *argv[])
       st = list_pushFront(l1, number);
       if (st == ERROR)
       {
+        list_float_free(l1);
         list_free(l1);
         fclose(file);
         return -1;
@@ -59,6 +62,7 @@ int main(int argc, char *argv[])
       st = list_pushBack(l1, number);
       if (st == ERROR)
       {
+        list_float_free(l1);
         list_free(l1);
         fclose(file);
         return -1;
@@ -73,21 +77,27 @@ int main(int argc, char *argv[])
   l2 = list_new();
   if (!l2)
   {
+    list_float_free(l1);
     list_free(l1);
     return -1;
   }
   l3 = list_new();
   if (!l3)
   {
+    list_float_free(l1);
     list_free(l1);
+    list_float_free(l2);
     list_free(l2);
     return -1;
   }
   l4 = list_new();
   if (!l4)
   {
+    list_float_free(l1);
     list_free(l1);
+    list_float_free(l2);
     list_free(l2);
+    list_float_free(l3);
     list_free(l3);
     return -1;
   }
@@ -100,27 +110,42 @@ int main(int argc, char *argv[])
 
     if (!e)
     {
+      list_float_free(l1);
       list_free(l1);
+      list_float_free(l2);
       list_free(l2);
+      list_float_free(l3);
       list_free(l3);
+      list_float_free(l4);
+      list_free(l4);
       return -1;
     }
 
     st = list_pushBack(l2, e);
     if (st == ERROR)
     {
+      list_float_free(l1);
       list_free(l1);
+      list_float_free(l2);
       list_free(l2);
+      list_float_free(l3);
       list_free(l3);
+      list_float_free(l4);
+      list_free(l4);
       return -1;
     }
 
     st = list_pushInOrder(l4, e, float_cmp, order);
     if (st == ERROR)
     {
+      list_float_free(l1);
       list_free(l1);
+      list_float_free(l2);
       list_free(l2);
+      list_float_free(l3);
       list_free(l3);
+      list_float_free(l4);
+      list_free(l4);
       return -1;
     }
   }
@@ -133,27 +158,42 @@ int main(int argc, char *argv[])
 
     if (!e)
     {
+      list_float_free(l1);
       list_free(l1);
+      list_float_free(l2);
       list_free(l2);
+      list_float_free(l3);
       list_free(l3);
+      list_float_free(l4);
+      list_free(l4);
       return -1;
     }
 
     st = list_pushBack(l3, e);
     if (st == ERROR)
     {
+      list_float_free(l1);
       list_free(l1);
+      list_float_free(l2);
       list_free(l2);
+      list_float_free(l3);
       list_free(l3);
+      list_float_free(l4);
+      list_free(l4);
       return -1;
     }
 
     st = list_pushInOrder(l4, e, float_cmp, order);
     if (st == ERROR)
     {
+      list_float_free(l1);
       list_free(l1);
+      list_float_free(l2);
       list_free(l2);
+      list_float_free(l3);
       list_free(l3);
+      list_float_free(l4);
+      list_free(l4);
       return -1;
     }
   }
@@ -161,10 +201,32 @@ int main(int argc, char *argv[])
 
   list_print(stdout, l4, float_print);
 
+  list_float_free(l1);
   list_free(l1);
+  list_float_free(l2);
   list_free(l2);
+  list_float_free(l3);
   list_free(l3);
+  list_float_free(l4);
   list_free(l4);
 
   return 0;
+}
+
+Status list_float_free (List *l){
+  float *aux=NULL;
+
+  if(!l){
+    return ERROR;
+  }
+
+  while(list_isEmpty(l)==FALSE){
+    aux = list_popFront(l);
+    if(aux!=NULL){
+      free(aux);
+      aux=NULL;
+    }
+  }
+  free(l);
+  return OK;
 }

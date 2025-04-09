@@ -250,15 +250,6 @@ void *list_popBack(List *pl)
 
 void list_free(List *pl)
 {
-  /*NodeList *aux1 = pl->last->next, *aux2 = NULL;*/
-
-  /*while (aux1)
-  {
-    aux2 = aux1;
-    aux1 = aux1->next;
-    free(aux2);
-  }*/
-
   if (pl)
   {
     if (pl->last)
