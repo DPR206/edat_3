@@ -22,7 +22,7 @@ p3_e2a: $(OBJECTSP3E2A)
 p3_e2b: $(OBJECTSP3E2B)
 	$(CC) $(CFLAGS) -o p3_e2b $(OBJECTSP3E2B)
 
-p3_e3: $(OBJECTSP3E)
+p3_e3: $(OBJECTSP3E3)
 	$(CC) $(CFLAGS) -o p3_e3 $(OBJECTSP3E3)
 
 p3_e1.o: p3_e1.c vertex.h delivery.h queue.h file_utils.h
@@ -37,13 +37,13 @@ p3_e2b.o: p3_e2b.c vertex.h graph.h queue.h stack.h file_utils.h
 p3_e3.o: p3_e3.c list.h file_utils.h
 	$(CC) $(CFLAGS) -c p3_e3.c
 
-queue.o: queue.c
+queue.o: queue.c queue.h
 	$(CC) $(CFLAGS) -c queue.c
 
-stack.o: stack.c
+stack.o: stack.c stack.h
 	$(CC) $(CFLAGS) -c stack.c
 
-list.o: list.c
+list.o: list.c list.h
 	$(CC) $(CFLAGS) -c list.c
 
 vertex.o: vertex.c vertex.h

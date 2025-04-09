@@ -92,12 +92,12 @@ Status list_pushFront(List *pl, void *e)
   if (list_isEmpty(pl) == TRUE)
   {
     pl->last = new_nd;
-    pl->last->next = pl->last;
+    new_nd->next = new_nd;
   }
   else
   {
-    new_nd->next = pl->last->next;
-    pl->last->next = new_nd;
+    new_nd->next = (pl->last)->next;
+    (pl->last)->next = new_nd;
   }
 
   return OK;
@@ -121,9 +121,8 @@ Status list_pushBack(List *pl, void *e)
 
   if (list_isEmpty(pl) == TRUE)
   {
-    new_nd->next = new_nd;
     pl->last = new_nd;
-    /*pl->last = new_nd->next = new_nd;*/
+    new_nd->next = new_nd;
   }
   else
   {
@@ -138,7 +137,7 @@ Status list_pushBack(List *pl, void *e)
 Status list_pushInOrder(List *pl, void *e, P_ele_cmp f, int order)
 {
   NodeList *aux = NULL, *new_nd = NULL;
-  if (!pl || !e || order == 0)
+  if (!pl || !e || !f || order == 0)
   {
     return ERROR;
   }
@@ -151,54 +150,31 @@ Status list_pushInOrder(List *pl, void *e, P_ele_cmp f, int order)
 
   if (list_isEmpty(pl) == TRUE)
   {
-    pl->last = new_nd->next = new_nd;
+    pl->last = new_nd;
+    new_nd->next = new_nd;
+    return OK;
   }
 
   aux = pl->last;
 
-  if (order > 0)
+  if (order * f(e, pl->last->data) > 0)
   {
-    if (f(e, aux) > 0)
-    {
-
-      new_nd->next = pl->last->next;
-      pl->last->next = new_nd;
-      pl->last = new_nd;
-
-      return OK;
-    }
-
-    while (f(e, aux->next->data) > 0)
-    {
-      aux = aux->next;
-    }
-
-    new_nd->next = aux->next;
-    aux->next = new_nd;
+    new_nd->next = pl->last->next;
+    pl->last->next = new_nd;
+    pl->last = new_nd;
 
     return OK;
   }
-  else
+
+  while (order * f(e, aux->next->data) > 0)
   {
-    if (f(e, aux) < 0)
-    {
-      new_nd->next = pl->last->next;
-      pl->last->next = new_nd;
-      pl->last = new_nd;
-
-      return OK;
-    }
-
-    while (f(e, aux->next->data) < 0)
-    {
-      aux = aux->next;
-    }
-
-    new_nd->next = aux->next;
-    aux->next = new_nd;
-
-    return OK;
+    aux = aux->next;
   }
+
+  new_nd->next = aux->next;
+  aux->next = new_nd;
+
+  return OK;
 }
 
 void *list_popFront(List *pl)

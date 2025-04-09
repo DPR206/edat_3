@@ -25,6 +25,7 @@
 #define	LIST_H
 
 #include "types.h"
+#include <stdio.h>
 
 /**
  * List type definition: a list of arbitrary elements.

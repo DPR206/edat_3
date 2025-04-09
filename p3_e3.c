@@ -4,15 +4,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+float *read_from_file(FILE *file, int num);
+
 int main(int argc, char *argv[])
 {
-  List *l1 = NULL, *l2 = NULL;
+  List *l1 = NULL, *l2 = NULL, *l3 = NULL, *l4=NULL;
   FILE *file = NULL;
   Status st = OK;
   char *filename = NULL;
   int total = 0, i, order = 0;
-  float n;
-  void *e, *number = NULL;
+  void *e;
+  float *number=NULL, n;
 
   if (argc < 3 || argc > 3)
   {
@@ -21,16 +23,13 @@ int main(int argc, char *argv[])
   }
 
   filename = argv[1];
-
   file = fopen(filename, "r");
-
   if (!file)
   {
     return -1;
   }
 
   l1 = list_new();
-
   if (!l1)
   {
     fclose(file);
@@ -39,20 +38,12 @@ int main(int argc, char *argv[])
 
   fscanf(file, "%d", &total);
 
-  for (i = 1; i <= total; i++)
+  for (i = 0; i < total; i++)
   {
     fscanf(file, "%f", &n);
-
     number = float_init(n);
 
-    if (!number)
-    {
-      list_free(l1);
-      fclose(file);
-      return -1;
-    }
-
-    if (!(i % 2))
+    if (i % 2)
     {
       st = list_pushFront(l1, number);
       if (st == ERROR)
@@ -73,20 +64,31 @@ int main(int argc, char *argv[])
         return -1;
       }
     }
-
-    float_free(number);
   }
-
   list_print(stdout, l1, float_print);
   fclose(file);
 
   fprintf(stdout, "Finished inserting. Now we extract from the beginning and insert in order:\n");
 
   l2 = list_new();
-
   if (!l2)
   {
     list_free(l1);
+    return -1;
+  }
+  l3 = list_new();
+  if (!l3)
+  {
+    list_free(l1);
+    list_free(l2);
+    return -1;
+  }
+  l4 = list_new();
+  if (!l4)
+  {
+    list_free(l1);
+    list_free(l2);
+    list_free(l3);
     return -1;
   }
 
@@ -100,22 +102,31 @@ int main(int argc, char *argv[])
     {
       list_free(l1);
       list_free(l2);
+      list_free(l3);
       return -1;
     }
 
-    st = list_pushInOrder(l2, e, float_cmp, order);
+    st = list_pushBack(l2, e);
     if (st == ERROR)
     {
       list_free(l1);
       list_free(l2);
+      list_free(l3);
+      return -1;
+    }
+
+    st = list_pushInOrder(l4, e, float_cmp, order);
+    if (st == ERROR)
+    {
+      list_free(l1);
+      list_free(l2);
+      list_free(l3);
       return -1;
     }
   }
-
   list_print(stdout, l2, float_print);
 
   fprintf(stdout, "Now we extract from the end and insert in order:\n");
-
   for (i = total / 2; i < total; i++)
   {
     e = list_popBack(l1);
@@ -124,22 +135,36 @@ int main(int argc, char *argv[])
     {
       list_free(l1);
       list_free(l2);
+      list_free(l3);
       return -1;
     }
 
-    st = list_pushInOrder(l2, e, float_cmp, order);
+    st = list_pushBack(l3, e);
     if (st == ERROR)
     {
       list_free(l1);
       list_free(l2);
+      list_free(l3);
+      return -1;
+    }
+
+    st = list_pushInOrder(l4, e, float_cmp, order);
+    if (st == ERROR)
+    {
+      list_free(l1);
+      list_free(l2);
+      list_free(l3);
       return -1;
     }
   }
+  list_print(stdout, l3, float_print);
 
-  list_print(stdout, l2, float_print);
+  list_print(stdout, l4, float_print);
 
   list_free(l1);
   list_free(l2);
+  list_free(l3);
+  list_free(l4);
 
   return 0;
 }
