@@ -10,7 +10,7 @@ Status list_float_free (List *l);
 
 int main(int argc, char *argv[])
 {
-  List *l1 = NULL, *l2 = NULL, *l3 = NULL, *l4=NULL;
+  List *l1 = NULL, *l2 = NULL;
   FILE *file = NULL;
   Status st = OK;
   char *filename = NULL;
@@ -81,26 +81,6 @@ int main(int argc, char *argv[])
     list_free(l1);
     return -1;
   }
-  l3 = list_new();
-  if (!l3)
-  {
-    list_float_free(l1);
-    list_free(l1);
-    list_float_free(l2);
-    list_free(l2);
-    return -1;
-  }
-  l4 = list_new();
-  if (!l4)
-  {
-    list_float_free(l1);
-    list_free(l1);
-    list_float_free(l2);
-    list_free(l2);
-    list_float_free(l3);
-    list_free(l3);
-    return -1;
-  }
 
   order = atoi(argv[2]);
 
@@ -114,42 +94,23 @@ int main(int argc, char *argv[])
       list_free(l1);
       list_float_free(l2);
       list_free(l2);
-      list_float_free(l3);
-      list_free(l3);
-      list_float_free(l4);
-      list_free(l4);
       return -1;
     }
 
-    st = list_pushBack(l2, e);
+    float_print(stdout, e);
+    fprintf(stdout, " ");
+
+    st = list_pushInOrder(l2, e, float_cmp, order);
     if (st == ERROR)
     {
       list_float_free(l1);
       list_free(l1);
       list_float_free(l2);
       list_free(l2);
-      list_float_free(l3);
-      list_free(l3);
-      list_float_free(l4);
-      list_free(l4);
-      return -1;
-    }
-
-    st = list_pushInOrder(l4, e, float_cmp, order);
-    if (st == ERROR)
-    {
-      list_float_free(l1);
-      list_free(l1);
-      list_float_free(l2);
-      list_free(l2);
-      list_float_free(l3);
-      list_free(l3);
-      list_float_free(l4);
-      list_free(l4);
       return -1;
     }
   }
-  list_print(stdout, l2, float_print);
+  fprintf(stdout, "\n");
 
   fprintf(stdout, "Now we extract from the end and insert in order:\n");
   for (i = total / 2; i < total; i++)
@@ -162,53 +123,30 @@ int main(int argc, char *argv[])
       list_free(l1);
       list_float_free(l2);
       list_free(l2);
-      list_float_free(l3);
-      list_free(l3);
-      list_float_free(l4);
-      list_free(l4);
       return -1;
     }
 
-    st = list_pushBack(l3, e);
+    float_print(stdout, e);
+    fprintf(stdout, " ");
+
+    st = list_pushInOrder(l2, e, float_cmp, order);
     if (st == ERROR)
     {
       list_float_free(l1);
       list_free(l1);
       list_float_free(l2);
       list_free(l2);
-      list_float_free(l3);
-      list_free(l3);
-      list_float_free(l4);
-      list_free(l4);
-      return -1;
-    }
-
-    st = list_pushInOrder(l4, e, float_cmp, order);
-    if (st == ERROR)
-    {
-      list_float_free(l1);
-      list_free(l1);
-      list_float_free(l2);
-      list_free(l2);
-      list_float_free(l3);
-      list_free(l3);
-      list_float_free(l4);
-      list_free(l4);
       return -1;
     }
   }
-  list_print(stdout, l3, float_print);
+  fprintf(stdout, "\n");
 
-  list_print(stdout, l4, float_print);
+  list_print(stdout, l2, float_print);
 
   list_float_free(l1);
   list_free(l1);
   list_float_free(l2);
   list_free(l2);
-  list_float_free(l3);
-  list_free(l3);
-  list_float_free(l4);
-  list_free(l4);
 
   return 0;
 }
@@ -227,6 +165,6 @@ Status list_float_free (List *l){
       aux=NULL;
     }
   }
-  free(l);
+
   return OK;
 }
